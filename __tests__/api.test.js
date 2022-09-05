@@ -28,4 +28,12 @@ describe('GET /api/categories', () => {
             })
         })
     })
+    test('404: responds with "Not found" if invalid endpoint is input', () => {
+        return request(app)
+        .get('/api/category')
+        .expect(404)
+        .then(({body}) => {
+            expect(body).toEqual({msg: "Not found"})
+        })
+    })
 })
