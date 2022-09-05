@@ -14,7 +14,6 @@ afterAll(() => {
 
 describe('GET /api/categories', () => {
     test('200: responds with an array of category objects with the correct properties', () => {
-        console.log('test')
         return request(app)
         .get('/api/categories')
         .expect(200)
