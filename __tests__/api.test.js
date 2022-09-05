@@ -18,9 +18,9 @@ describe('GET /api/categories', () => {
         .get('/api/categories')
         .expect(200)
         .then(({body}) => {
-            expect(Array.isArray(body)).toBe(true);
-            expect(body.length > 0).toBe(true);
-            body.forEach((category) => {
+            expect(Array.isArray(body.categories)).toBe(true);
+            expect(body.categories.length).toBe(4);
+            body.categories.forEach((category) => {
                 expect(category).toMatchObject({
                     slug: expect.any(String),
                     description: expect.any(String)
@@ -30,7 +30,7 @@ describe('GET /api/categories', () => {
     })
     test('404: responds with "Not found" if invalid endpoint is input', () => {
         return request(app)
-        .get('/api/category')
+        .get('/api/InvalidPath')
         .expect(404)
         .then(({body}) => {
             expect(body).toEqual({msg: "Not found"})
