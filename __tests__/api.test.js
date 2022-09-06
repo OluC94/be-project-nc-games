@@ -51,7 +51,6 @@ describe('GET /api/reviews/:review_id', () => {
         .expect(200)
         .then(({body}) => {
             const { review } = body;
-            console.log(review);
             expect(review).toEqual(expect.objectContaining({
                 review_id: 12,
                 title: testTitle,
@@ -65,6 +64,23 @@ describe('GET /api/reviews/:review_id', () => {
             }))
         })
     })
-    test.todo('400: Bad Request when invalid review ID is used in the path')
-    test.todo('404: Not Found when valid review ID that does not exist is used in the path')
+    test('404: responds with Review Not Found when requesting a valid review ID that does not exist', () => {
+        const testReviewID = 100;
+        return request(app)
+        .get(`/api/reviews/${testReviewID}`)
+        .expect(404)
+        .then(({body}) => {
+            expect(body.msg).toBe("Review not found");
+        })
+    })
+    test('400: responds with Bad Request when invalid review ID is used in the path', () => {
+        const testReviewID = "invalid_ID";
+        return request(app)
+        .get(`/api/reviews/${testReviewID}`)
+        .expect(400)
+        .then(({body}) => {
+            expect(body.msg).toBe("Bad Request");
+        })
+    })
+    
 })
