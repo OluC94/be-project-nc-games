@@ -195,7 +195,7 @@ describe('PATCH /api/reviews/:review_id', () => {
 
 })
 
-describe.only('GET /api/reviews/:review_id (comment count)', () => {
+describe.skip('GET /api/reviews/:review_id (comment count)', () => {
     test('200: review response object contains comment_count key which totals the count of all comments with this review_id', () => {
         const testReviewID = 3;
         return request(app)
@@ -203,7 +203,6 @@ describe.only('GET /api/reviews/:review_id (comment count)', () => {
         .expect(200)
         .then(({body}) => {
             const { review } = body;
-            console.log(review)
             expect(review).toMatchObject({
                 review_id: 3,
                 title: expect.any(String),
@@ -218,6 +217,16 @@ describe.only('GET /api/reviews/:review_id (comment count)', () => {
             })
         })
     })
-    test.todo('200: review response object successfully totals comment_count where review has no comments')
+    test('200: review response object successfully totals comment_count where review has no comments', () => {
+        const testReviewID = 1;
+        return request(app)
+        .get(`/api/reviews/${testReviewID}`)
+        .expect(200)
+        .then(({body}) => {
+            const { review } = body;
+            expect(review.review_id).toBe(1);
+            expect(review.comment_count).toBe(0);
+        })
+    })
     test.todo('fix previous tests that this breaks')
 })

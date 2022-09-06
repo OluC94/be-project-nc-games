@@ -8,31 +8,35 @@ exports.fetchCategories = () => {
 
 exports.fetchReviewByID = (review_id) => {
     const queryValuesArr = [review_id]
-    // const queryStr = `SELECT reviews.*, COUNT(comments.review_id) AS comment_count 
-    // FROM reviews 
-    // JOIN comments
-    // ON reviews.review_id = comments.review_id
-    // WHERE reviews.review_id = $${queryValuesArr.length}
-    // GROUP BY reviews.review_id;`;
-
-    const queryStr = `SELECT reviews.review_id, reviews.title, reviews.review_body, reviews.designer, reviews.review_img_url, reviews.votes, reviews.category, reviews.owner, reviews.created_at, COUNT(comments.review_id) AS comment_count 
-    FROM reviews 
-    JOIN comments
-    ON reviews.review_id = comments.review_id
-    WHERE reviews.review_id = $${queryValuesArr.length}
-    GROUP BY reviews.review_id;`;
-
-
-
-    // const queryStr = `SELECT * FROM reviews WHERE review_id = $${queryValuesArr.length}`;
-
-    return db.query(queryStr, queryValuesArr).then(({rows}) => {
-        if (rows.length === 0){
-            return Promise.reject({status: 404, msg: 'Review not found'})
-        } else {
-            rows[0].comment_count = parseInt(rows[0].comment_count)
-            return rows[0];
+    // let queryStr = ''; 
+    
+    return db.query('SELECT review_id FROM comments').then(({rows}) => {
+        let queryStr = '';
+        // loop over the rows array, break out if object matches
+        for (let i = 0; i < rows.length; i++){
+            if (parseInt(rows[i].review_id) === parseInt(review_id)){
+                return queryStr = `SELECT reviews.*, COUNT(comments.review_id) AS comment_count 
+                FROM reviews 
+                JOIN comments
+                ON reviews.review_id = comments.review_id
+                WHERE reviews.review_id = $${queryValuesArr.length}
+                GROUP BY reviews.review_id;`;
+            }
         }
+        return queryStr = `SELECT * FROM reviews WHERE review_id = $${queryValuesArr.length};`
+    
+    }).then((queryStr) => {
+        return db.query(queryStr, queryValuesArr).then(({rows}) => {
+            console.log(rows)
+            if (rows.length === 0){
+                return Promise.reject({status: 404, msg: 'Review not found'})
+            } else {
+                rows[0].comment_count = parseInt(rows[0].comment_count);
+
+                // if rows[0].comment_count is falsy, set it to zero then this should be done
+                return rows[0];
+            }
+        })
     })
 }
 
