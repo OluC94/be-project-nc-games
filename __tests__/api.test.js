@@ -41,39 +41,28 @@ describe('GET /api/categories', () => {
 describe('GET /api/reviews/:review_id', () => {
     test('200: responds with an object containing the appropriate properties', () => {
         const testReviewID = 12;
-        const testTitle = `"Scythe; you're gonna need a bigger table!"`
+        const testTitle = `Scythe; you're gonna need a bigger table!`
+        const testTimestamp = `2021-01-22T10:37:04.839Z`
+        const testURL = `https://images.pexels.com/photos/163064/play-stone-network-networked-interactive-163064.jpeg`
+        const testBody = 'Spend 30 minutes just setting up all of the boards (!) meeple and decks, just to forget how to play. Scythe can be a lengthy game but really packs a punch if you put the time in. With beautiful artwork, countless scenarios and clever game mechanics, this board game is a must for any board game fanatic; just make sure you explain ALL the rules before you start playing with first timers or you may find they bring it up again and again.'
         
-
-
-
         return request(app)
         .get(`/api/reviews/${testReviewID}`)
         .expect(200)
         .then(({body}) => {
             const { review } = body;
             console.log(review);
-            expect(review).toMatchObject({
-                review_id: expect.any(Number),
-                title: expect.any(String),
-                review_body: expect.any(String),
-                designer: expect.any(String),
-                review_img_url: expect.any(String),
-                votes: expect.any(Number),
-                category: expect.any(String),
-                owner: expect.any(String),
-                created_at: expect.any(String),
-            })
-            expect(review.review_id).toBe(12);
-            expect(review.title).toBe();
-            expect(review.review_body).toBe();
-            expect(review.designer).toBe();
-            expect(review.revireview_img_urlew_id).toBe();
-            expect(review.votes).toBe();
-            expect(review.category).toBe();
-            expect(review.owner).toBe();
-            expect(review.created_at).toBe();
-
-            
+            expect(review).toEqual(expect.objectContaining({
+                review_id: 12,
+                title: testTitle,
+                review_body: testBody,
+                designer: 'Jamey Stegmaier',
+                review_img_url: testURL,
+                votes: 100,
+                category: 'social deduction',
+                owner: 'mallionaire',
+                created_at: testTimestamp
+            }))
         })
     })
     test.todo('400: Bad Request when invalid review ID is used in the path')
