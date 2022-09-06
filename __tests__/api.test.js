@@ -159,4 +159,38 @@ describe('PATCH /api/reviews/:review_id', () => {
             expect(body.msg).toBe("Bad Request")
         })
     })
+    test('404: responds with Review not found when trying to patch a valid review ID that does not exist', () => {
+        const testInc = {inc_votes: 5};
+        const testReviewID = 50;
+        return request(app)
+        .patch(`/api/reviews/${testReviewID}`)
+        .send(testInc)
+        .expect(404)
+        .then(({body}) => {
+            expect(body.msg).toBe("Review not found")
+        })
+    })
+    test('400: responds with bad request when trying to patch an invalid review ID', () => {
+        const testInc = {inc_votes: 5};
+        const testReviewID = 'not_an_id';
+        return request(app)
+        .patch(`/api/reviews/${testReviewID}`)
+        .send(testInc)
+        .expect(400)
+        .then(({body}) => {
+            expect(body.msg).toBe('Bad Request')
+        })
+    })
+    test('400: responds with bad request if the inc_votes key is missing from the request', () => {
+        const testInc = {};
+        const testReviewID = 9;
+        return request(app)
+        .patch(`/api/reviews/${testReviewID}`)
+        .send(testInc)
+        .expect(400)
+        .then(({body}) => {
+            expect(body.msg).toBe('Bad Request')
+        })
+    })
+
 })
