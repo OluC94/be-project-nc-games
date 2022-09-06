@@ -148,7 +148,15 @@ describe('PATCH /api/reviews/:review_id', () => {
             }))
         })
     })
-    test.todo('400: responds with bad request when invalid increment is provided')
-    test.todo('400: responds with bad request when attempting to patch an invalid review ID')
-    test.todo('404 responds with Review Not Found when attempting to patch a valid review ID that does not exist')
+    test('400: responds with bad request when invalid increment is provided', () => {
+        const testInc = {inc_votes: 'not_a_number'};
+        const testReviewID = 10;
+        return request(app)
+        .patch(`/api/reviews/${testReviewID}`)
+        .send(testInc)
+        .expect(400)
+        .then(({body}) => {
+            expect(body.msg).toBe("Bad Request")
+        })
+    })
 })
