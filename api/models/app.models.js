@@ -16,6 +16,11 @@ exports.fetchReviewByID = (review_id) => {
     })
 }
 
+exports.editReview = (review_id, patchData) => {
+    console.log(review_id, patchData);
+    return db.query();
+}
+
 exports.fetchUsers = () => {
     return db.query('SELECT * FROM users').then((users) => {
         return users.rows;

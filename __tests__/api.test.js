@@ -104,3 +104,38 @@ describe('GET /api/users', () => {
         })
     })
 })
+
+describe.skip('PATCH /api/reviews/:review_id', () => {
+    test('200: responds with the correctly updated review object when incrementing the review votes', () => {
+        const testInc = {inc_votes: 5};
+        const testReviewID = 10;
+        return request(app)
+        .patch(`/api/reviews/${testReviewID}`)
+        .send(testInc)
+        .expect(200)
+        .then(({body}) => {
+            expect(body.review).toEqual(expect.objectContaining({
+                review_id: 10,
+                title: expect.any(String),
+                review_body: expect.any(String),
+                designer: expect.any(String),
+                review_img_url: expect.any(String),
+                votes: 15,
+                category: expect.any(String),
+                owner: expect.any(String),
+                created_at: expect.any(String)
+            }))
+        })
+    })
+    test.todo('200: responds with the correctly updated review object when decrementing the review votes')
+    test.todo('400: responds with bad request when invalid increment is provided')
+    test.todo('400: responds with bad request when attempting to patch an invalid review ID')
+    test.todo('404 responds with Review Not Found when attempting to patch a valid review ID that does not exist')
+})
+
+
+/* 
+
+        10 | Build you own tour de Yorkshire  | social deduction | Asger Harding Granerud | mallionaire     | body| url  | timestamp |  votes =   10
+
+*/
