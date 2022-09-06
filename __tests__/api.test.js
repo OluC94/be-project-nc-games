@@ -104,3 +104,93 @@ describe('GET /api/users', () => {
         })
     })
 })
+
+describe('PATCH /api/reviews/:review_id', () => {
+    test('200: responds with the correctly updated review object when incrementing the review votes', () => {
+        const testInc = {inc_votes: 5};
+        const testReviewID = 10;
+        return request(app)
+        .patch(`/api/reviews/${testReviewID}`)
+        .send(testInc)
+        .expect(200)
+        .then(({body}) => {
+            expect(body.review).toEqual(expect.objectContaining({
+                review_id: 10,
+                title: expect.any(String),
+                review_body: expect.any(String),
+                designer: expect.any(String),
+                review_img_url: expect.any(String),
+                votes: 15,
+                category: expect.any(String),
+                owner: expect.any(String),
+                created_at: expect.any(String)
+            }))
+        })
+    })
+    test('200: responds with the correctly updated review object when decrementing the review votes', () => {
+        const testDec = {inc_votes: -10};
+        const testReviewID = 9;
+        return request(app)
+        .patch(`/api/reviews/${testReviewID}`)
+        .send(testDec)
+        .expect(200)
+        .then(({body}) => {
+            expect(body.review).toEqual(expect.objectContaining({
+                review_id: 9,
+                title: expect.any(String),
+                review_body: expect.any(String),
+                designer: expect.any(String),
+                review_img_url: expect.any(String),
+                votes: 0,
+                category: expect.any(String),
+                owner: expect.any(String),
+                created_at: expect.any(String)
+            }))
+        })
+    })
+    test('400: responds with bad request when invalid increment is provided', () => {
+        const testInc = {inc_votes: 'not_a_number'};
+        const testReviewID = 10;
+        return request(app)
+        .patch(`/api/reviews/${testReviewID}`)
+        .send(testInc)
+        .expect(400)
+        .then(({body}) => {
+            expect(body.msg).toBe("Bad Request")
+        })
+    })
+    test('404: responds with Review not found when trying to patch a valid review ID that does not exist', () => {
+        const testInc = {inc_votes: 5};
+        const testReviewID = 50;
+        return request(app)
+        .patch(`/api/reviews/${testReviewID}`)
+        .send(testInc)
+        .expect(404)
+        .then(({body}) => {
+            expect(body.msg).toBe("Review not found")
+        })
+    })
+    test('400: responds with bad request when trying to patch an invalid review ID', () => {
+        const testInc = {inc_votes: 5};
+        const testReviewID = 'not_an_id';
+        return request(app)
+        .patch(`/api/reviews/${testReviewID}`)
+        .send(testInc)
+        .expect(400)
+        .then(({body}) => {
+            expect(body.msg).toBe('Bad Request')
+        })
+    })
+    test('400: responds with bad request if the inc_votes key is missing from the request', () => {
+        const testInc = {};
+        const testReviewID = 9;
+        return request(app)
+        .patch(`/api/reviews/${testReviewID}`)
+        .send(testInc)
+        .expect(400)
+        .then(({body}) => {
+            expect(body.msg).toBe('Bad Request')
+        })
+    })
+
+})
