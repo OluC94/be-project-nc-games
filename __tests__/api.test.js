@@ -84,3 +84,23 @@ describe('GET /api/reviews/:review_id', () => {
     })
     
 })
+
+describe('GET /api/users', () => {
+    test('200: responds with an object containing array of user information objects', () => {
+        return request(app)
+        .get('/api/users')
+        .expect(200)
+        .then(({body}) => {
+            expect(body.hasOwnProperty('users')).toBe(true);
+            expect(Array.isArray(body.users)).toBe(true);
+            expect(body.users.length).toBe(4);
+            body.users.forEach((user) => {
+                expect(user).toMatchObject({
+                    username: expect.any(String),
+                    name: expect.any(String),
+                    avatar_url: expect.any(String)
+                })
+            })
+        })
+    })
+})

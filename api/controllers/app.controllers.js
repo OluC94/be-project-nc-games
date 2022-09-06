@@ -1,4 +1,4 @@
-const { fetchCategories, fetchReviewByID } = require("../models/app.models");
+const { fetchCategories, fetchReviewByID, fetchUsers } = require("../models/app.models");
 
 exports.getCategories = (req, res, next) => {
     fetchCategories().then((categories) => {
@@ -12,4 +12,10 @@ exports.getReviewByID = (req, res, next) => {
         res.status(200).send({review})
     }).catch(next);
 
+}
+
+exports.getUsers = (req, res, next) => {
+    fetchUsers().then((users) => {
+        res.status(200).send({users})
+    }).catch(next);
 }
