@@ -16,8 +16,8 @@ exports.getReviewByID = (req, res, next) => {
 exports.patchReviewByID = (req, res, next) => {
     const { body } = req;
     const {review_id} = req.params;
-    editReview(review_id, body).then((review) => {
-        res.status(200).send("still testing");
+    editReview(review_id, body).then((editedReview) => {
+        res.status(200).send({review: editedReview});
     }).catch(next);
 }
 

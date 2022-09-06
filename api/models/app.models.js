@@ -18,8 +18,17 @@ exports.fetchReviewByID = (review_id) => {
 
 exports.editReview = (review_id, patchData) => {
     console.log(review_id, patchData);
-    return db.query();
+    const queryStr = `UPDATE reviews SET votes = votes + $1 WHERE review_id = $2 RETURNING *`;
+    return db.query(queryStr, [patchData.inc_votes, review_id])
+    .then(({rows}) => {
+        return rows[0];
+    });
 }
+
+// how to catually perform the incrementation
+//1 - query the db to retrieve votes for id, then increment and update with new value
+//2 - bd query direclty, performing the calculation inline
+
 
 exports.fetchUsers = () => {
     return db.query('SELECT * FROM users').then((users) => {
