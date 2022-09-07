@@ -1,10 +1,17 @@
-const { fetchCategories, fetchReviewByID, fetchUsers, editReview } = require("../models/app.models");
+const { fetchCategories, fetchReviewByID, fetchUsers, editReview, fetchReviews } = require("../models/app.models");
 
 exports.getCategories = (req, res, next) => {
     fetchCategories().then((categories) => {
         res.status(200).send({categories})
     }).catch(next);
 };
+
+exports.getReviews = (req, res, next) => {
+    fetchReviews().then((reviews) => {{
+        console.log(reviews);
+        res.status(200).send({reviews})
+    }}).catch(next);
+}
 
 exports.getReviewByID = (req, res, next) => {
     const { review_id } = req.params;

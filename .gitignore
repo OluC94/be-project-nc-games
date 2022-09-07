@@ -1,3 +1,7 @@
 node_modules
 .env.*
 README-original.md
+view-dev-data.sql
+view-test-data.sql
+view-dev-data.txt
+view-test-data.txt

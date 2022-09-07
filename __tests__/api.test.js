@@ -229,3 +229,37 @@ describe('GET /api/reviews/:review_id (comment count)', () => {
         })
     })
 })
+
+describe('GET /api/reviews', () => {
+    test('200: responds with an array of review objects containing the correct properties', () => {
+        return request(app)
+        .get('/api/reviews')
+        .expect(200)
+        .then(({body}) => {
+            expect(body.hasOwnProperty('reviews')).toBe(true)
+            expect(Array.isArray(body.reviews)).toBe(true);
+            expect(body.reviews.length).toBe(13);
+            body.reviews.forEach((review) => {
+                expect(review).toMatchObject({
+                    owner: expect.any(String),
+                    title: expect.any(String),
+                    review_id: expect.any(Number),
+                    category: expect.any(String),
+                    review_img_url: expect.any(String),
+                    created_at: expect.any(String),
+                    votes: expect.any(Number),
+                    designer: expect.any(String),
+                    comment_count: expect.any(Number)
+                });
+                expect(review.hasOwnProperty('review_body')).toBe(false);
+            })
+
+        })
+    })
+    test.todo('200: reviews array is sorted by date in descending order by default')
+    test.todo('200: category query successfully filters the results by value specified in the query')
+    test.todo('404: bad path')
+    test.todo('400: invalid query is used')
+    test.todo('400: valid query is used with invalid value')
+    test.todo('200: valid query is used with valid value that does not have any existing entries')
+})
