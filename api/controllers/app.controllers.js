@@ -8,7 +8,6 @@ exports.getCategories = (req, res, next) => {
 
 exports.getReviews = (req, res, next) => {
     fetchReviews().then((reviews) => {{
-        console.log(reviews);
         res.status(200).send({reviews})
     }}).catch(next);
 }
