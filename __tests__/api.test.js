@@ -253,10 +253,16 @@ describe('GET /api/reviews', () => {
                 });
                 expect(review.hasOwnProperty('review_body')).toBe(false);
             })
-
         })
     })
-    test.todo('200: reviews array is sorted by date in descending order by default')
+    test('200: reviews array is sorted by date in descending order by default', () => {
+        return request(app)
+        .get('/api/reviews')
+        .expect(200)
+        .then(({body}) => {
+            expect(body.reviews).toBeSortedBy('created_at', {descending: true});
+        })
+    })
     test.todo('200: category query successfully filters the results by value specified in the query')
     test.todo('404: bad path')
     test.todo('400: invalid query is used')
