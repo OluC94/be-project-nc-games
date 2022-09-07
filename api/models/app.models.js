@@ -8,11 +8,9 @@ exports.fetchCategories = () => {
 
 exports.fetchReviewByID = (review_id) => {
     const queryValuesArr = [review_id]
-    // let queryStr = ''; 
     
     return db.query('SELECT review_id FROM comments').then(({rows}) => {
         let queryStr = '';
-        // loop over the rows array, break out if object matches
         for (let i = 0; i < rows.length; i++){
             if (parseInt(rows[i].review_id) === parseInt(review_id)){
                 return queryStr = `SELECT reviews.*, COUNT(comments.review_id) AS comment_count 
