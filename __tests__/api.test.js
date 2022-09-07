@@ -60,7 +60,7 @@ describe('GET /api/reviews/:review_id', () => {
                 votes: 100,
                 category: 'social deduction',
                 owner: 'mallionaire',
-                created_at: testTimestamp
+                created_at: testTimestamp,
             }))
         })
     })
@@ -193,4 +193,39 @@ describe('PATCH /api/reviews/:review_id', () => {
         })
     })
 
+})
+
+describe('GET /api/reviews/:review_id (comment count)', () => {
+    test('200: review response object contains comment_count key which totals the count of all comments with this review_id', () => {
+        const testReviewID = 3;
+        return request(app)
+        .get(`/api/reviews/${testReviewID}`)
+        .expect(200)
+        .then(({body}) => {
+            const { review } = body;
+            expect(review).toMatchObject({
+                review_id: 3,
+                title: expect.any(String),
+                review_body: expect.any(String),
+                designer: expect.any(String),
+                review_img_url: expect.any(String),
+                votes: expect.any(Number),
+                category: expect.any(String),
+                owner: expect.any(String),
+                created_at: expect.any(String),
+                comment_count: 3
+            })
+        })
+    })
+    test('200: review response object successfully totals comment_count where review has no comments', () => {
+        const testReviewID = 1;
+        return request(app)
+        .get(`/api/reviews/${testReviewID}`)
+        .expect(200)
+        .then(({body}) => {
+            const { review } = body;
+            expect(review.review_id).toBe(1);
+            expect(review.comment_count).toBe(0);
+        })
+    })
 })
