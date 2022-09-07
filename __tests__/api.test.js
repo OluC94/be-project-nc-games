@@ -195,7 +195,7 @@ describe('PATCH /api/reviews/:review_id', () => {
 
 })
 
-describe.skip('GET /api/reviews/:review_id (comment count)', () => {
+describe('GET /api/reviews/:review_id (comment count)', () => {
     test('200: review response object contains comment_count key which totals the count of all comments with this review_id', () => {
         const testReviewID = 3;
         return request(app)
@@ -228,5 +228,4 @@ describe.skip('GET /api/reviews/:review_id (comment count)', () => {
             expect(review.comment_count).toBe(0);
         })
     })
-    test.todo('fix previous tests that this breaks')
 })
