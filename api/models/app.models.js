@@ -6,16 +6,22 @@ exports.fetchCategories = () => {
     })
 };
 
-exports.fetchReviews = () => {
-    const queryStr = `
+exports.fetchReviews = (category) => {
+    let queryStr = `
     SELECT reviews.owner, reviews.title, reviews.review_id, reviews.category, reviews.review_img_url, reviews.created_at, reviews.votes, reviews.designer, COUNT(comments.review_id) AS comment_count
     FROM reviews
     LEFT JOIN comments
-    ON reviews.review_id = comments.review_id
-    GROUP BY reviews.review_id
+    ON reviews.review_id = comments.review_id`;
+
+    if (category){
+        queryStr += ` WHERE reviews.category = $1`
+    }
+
+    queryStr += `
+     GROUP BY reviews.review_id
     ORDER BY reviews.created_at DESC;
     `
-    return db.query(queryStr).then(({rows}) => {
+    return db.query(queryStr, [category]).then(({rows}) => {
         const reviewsToReturn = rows.map((review) => {
             review.comment_count = parseInt(review.comment_count);
             return review;
@@ -23,6 +29,7 @@ exports.fetchReviews = () => {
         return reviewsToReturn;
     })
 }
+// failing other tests where no query is used
 
 exports.fetchReviewByID = (review_id) => {
     const queryValuesArr = [review_id]

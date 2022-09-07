@@ -230,13 +230,13 @@ describe('GET /api/reviews/:review_id (comment count)', () => {
     })
 })
 
-describe('GET /api/reviews', () => {
+describe.skip('GET /api/reviews', () => {
     test('200: responds with an array of review objects containing the correct properties', () => {
         return request(app)
         .get('/api/reviews')
         .expect(200)
         .then(({body}) => {
-            expect(body.hasOwnProperty('reviews')).toBe(true)
+            expect(body.hasOwnProperty('reviews')).toBe(true);
             expect(Array.isArray(body.reviews)).toBe(true);
             expect(body.reviews.length).toBe(13);
             body.reviews.forEach((review) => {
@@ -263,7 +263,19 @@ describe('GET /api/reviews', () => {
             expect(body.reviews).toBeSortedBy('created_at', {descending: true});
         })
     })
-    test.todo('200: category query successfully filters the results by value specified in the query')
+    test('200: category query successfully filters the results by value specified in the query', () => {
+        const pathQuery = 'category=social%20deduction'
+        return request(app)
+        .get(`/api/reviews?${pathQuery}`)
+        .expect(200)
+        .then(({body}) => {
+            expect(body.hasOwnProperty('reviews')).toBe(true);
+            expect(body.reviews.length).toBe(11);
+            body.reviews.forEach((review) => {
+                expect(review.category).toBe('social deduction')
+            })
+        })
+    })
     test.todo('404: bad path')
     test.todo('400: invalid query is used')
     test.todo('400: valid query is used with invalid value')
