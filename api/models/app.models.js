@@ -97,6 +97,16 @@ exports.editReview = (review_id, patchData) => {
     });
 }
 
+exports.fetchCommentsByReviewID = (review_id) => {
+    const queryStr = `
+    SELECT * FROM comments
+    WHERE review_id = $1;`
+    
+    return db.query(queryStr, [review_id]).then(({rows}) => {
+        return rows;
+    })
+}
+
 exports.fetchUsers = () => {
     return db.query('SELECT * FROM users').then((users) => {
         return users.rows;

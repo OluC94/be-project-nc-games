@@ -305,3 +305,28 @@ describe('GET /api/reviews', () => {
     })
     
 })
+
+describe('GET /api/reviews/:review_id/comments', () => {
+    test('200: responds with an object containing an array of comments, where each comment contains the correct properties', () => {
+        const testReviewID = 3;
+        return request(app)
+        .get(`/api/reviews/${testReviewID}/comments`)
+        .expect(200)
+        .then(({body}) => {
+            expect(body.hasOwnProperty('comments')).toBe(true);
+            expect(Array.isArray(body.comments)).toBe(true);
+            expect(body.comments.length).toBe(3);
+            body.comments.forEach((comment) => {
+                expect(comment).toMatchObject({
+                    comment_id: expect.any(Number),
+                    votes: expect.any(Number),
+                    created_at: expect.any(String),
+                    author: expect.any(String),
+                    body: expect.any(String),
+                    review_id: testReviewID
+                })
+            })
+        })
+    })
+    test.todo('');
+})
