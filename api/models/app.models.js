@@ -98,12 +98,32 @@ exports.editReview = (review_id, patchData) => {
 }
 
 exports.fetchCommentsByReviewID = (review_id) => {
+    review_id = parseInt(review_id)
     const queryStr = `
     SELECT * FROM comments
     WHERE review_id = $1;`
     
     return db.query(queryStr, [review_id]).then(({rows}) => {
-        return rows;
+        if (rows.length === 0) {
+            return Promise.all([rows, db.query('SELECT review_id FROM reviews')])
+        } else {
+            return Promise.all([rows])
+        }
+    }).then(([commentsRows, reviewIDList]) => {
+        
+        if (reviewIDList === undefined) {
+            return commentsRows;
+        }
+        
+        const existingIDCheck = reviewIDList.rows.filter((row) => {
+            return row.review_id === review_id;
+        })
+
+        if (existingIDCheck.length > 0) {
+            return commentsRows
+        } else {
+            return Promise.reject({status: 404, msg: 'Review not found'})
+        }
     })
 }
 
