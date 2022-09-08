@@ -230,7 +230,7 @@ describe('GET /api/reviews/:review_id (comment count)', () => {
     })
 })
 
-describe.skip('GET /api/reviews', () => {
+describe('GET /api/reviews', () => {
     test('200: responds with an array of review objects containing the correct properties', () => {
         return request(app)
         .get('/api/reviews')
@@ -260,6 +260,7 @@ describe.skip('GET /api/reviews', () => {
         .get('/api/reviews')
         .expect(200)
         .then(({body}) => {
+            expect(body.reviews.length).toBe(13);
             expect(body.reviews).toBeSortedBy('created_at', {descending: true});
         })
     })

@@ -7,6 +7,7 @@ exports.fetchCategories = () => {
 };
 
 exports.fetchReviews = (category) => {
+    const queryValuesArr = []
     let queryStr = `
     SELECT reviews.owner, reviews.title, reviews.review_id, reviews.category, reviews.review_img_url, reviews.created_at, reviews.votes, reviews.designer, COUNT(comments.review_id) AS comment_count
     FROM reviews
@@ -14,6 +15,7 @@ exports.fetchReviews = (category) => {
     ON reviews.review_id = comments.review_id`;
 
     if (category){
+        queryValuesArr.push(category)
         queryStr += ` WHERE reviews.category = $1`
     }
 
@@ -21,7 +23,8 @@ exports.fetchReviews = (category) => {
      GROUP BY reviews.review_id
     ORDER BY reviews.created_at DESC;
     `
-    return db.query(queryStr, [category]).then(({rows}) => {
+
+    return db.query(queryStr, queryValuesArr).then(({rows}) => {
         const reviewsToReturn = rows.map((review) => {
             review.comment_count = parseInt(review.comment_count);
             return review;
@@ -29,7 +32,6 @@ exports.fetchReviews = (category) => {
         return reviewsToReturn;
     })
 }
-// failing other tests where no query is used
 
 exports.fetchReviewByID = (review_id) => {
     const queryValuesArr = [review_id]
