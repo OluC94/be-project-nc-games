@@ -277,8 +277,31 @@ describe('GET /api/reviews', () => {
             })
         })
     })
-    test.todo('404: bad path')
-    test.todo('400: invalid query is used')
-    test.todo('400: valid query is used with invalid value')
-    test.todo('200: valid query is used with valid value that does not have any existing entries')
+    test('404: responds with Page not found when requesting a bad path', () => {
+        return request(app)
+        .get('/api/InvalidPath')
+        .expect(404)
+        .then(({body}) => {
+            expect(body).toEqual({msg: 'Not found'})
+        })
+    })
+    test('200: responds with an object containing an empty array when an existing category that has no data associated is used as the query values', () => {
+        return request(app)
+        .get('/api/reviews?category=children%27s%20games')
+        .expect(200)
+        .then(({body}) => {
+            expect(body.hasOwnProperty('reviews')).toBe(true);
+            expect(Array.isArray(body.reviews)).toBe(true);
+            expect(body.reviews.length).toBe(0);
+        })
+    })
+    test('404: responds with "Category not found" when a category that does not exist is used as the query value', () => {
+        return request(app)
+        .get('/api/reviews?category=not_a_category')
+        .expect(404)
+        .then(({body}) => {
+            expect(body).toEqual({msg: 'Category not found'});
+        })
+    })
+    
 })
