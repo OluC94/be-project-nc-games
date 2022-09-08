@@ -6,6 +6,52 @@ exports.fetchCategories = () => {
     })
 };
 
+exports.fetchReviews = (category) => {
+    const queryValuesArr = []
+    let queryStr = `
+    SELECT reviews.owner, reviews.title, reviews.review_id, reviews.category, reviews.review_img_url, reviews.created_at, reviews.votes, reviews.designer, COUNT(comments.review_id) AS comment_count
+    FROM reviews
+    LEFT JOIN comments
+    ON reviews.review_id = comments.review_id`;
+
+    if (category){
+        queryValuesArr.push(category)
+        queryStr += ` WHERE reviews.category = $1`
+    }
+
+    queryStr += `
+     GROUP BY reviews.review_id
+    ORDER BY reviews.created_at DESC;`
+
+    return db.query(queryStr, queryValuesArr).then(({rows}) => {        
+        
+        if(rows.length === 0) {
+            return Promise.all([rows, db.query('SELECT slug FROM categories')])
+        } else {
+            return Promise.all([rows])
+        }
+        
+    }).then(([reviewRows, categoryList]) => {
+        if (categoryList === undefined) {
+            const reviewsToReturn = reviewRows.map((review) => {
+                review.comment_count = parseInt(review.comment_count);
+                return review;
+            })
+            return reviewsToReturn;
+        } 
+
+        const invalidCategoryCheck = categoryList.rows.filter((row) => {
+            return row.slug === category
+        })
+        
+        if (invalidCategoryCheck.length > 0){
+            return reviewRows
+        } else {
+            return Promise.reject({status: 404, msg: 'Category not found'})
+        }
+    })
+}
+
 exports.fetchReviewByID = (review_id) => {
     const queryValuesArr = [review_id]
     

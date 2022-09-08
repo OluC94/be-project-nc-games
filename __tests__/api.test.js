@@ -229,3 +229,79 @@ describe('GET /api/reviews/:review_id (comment count)', () => {
         })
     })
 })
+
+describe('GET /api/reviews', () => {
+    test('200: responds with an array of review objects containing the correct properties', () => {
+        return request(app)
+        .get('/api/reviews')
+        .expect(200)
+        .then(({body}) => {
+            expect(body.hasOwnProperty('reviews')).toBe(true);
+            expect(Array.isArray(body.reviews)).toBe(true);
+            expect(body.reviews.length).toBe(13);
+            body.reviews.forEach((review) => {
+                expect(review).toMatchObject({
+                    owner: expect.any(String),
+                    title: expect.any(String),
+                    review_id: expect.any(Number),
+                    category: expect.any(String),
+                    review_img_url: expect.any(String),
+                    created_at: expect.any(String),
+                    votes: expect.any(Number),
+                    designer: expect.any(String),
+                    comment_count: expect.any(Number)
+                });
+                expect(review.hasOwnProperty('review_body')).toBe(false);
+            })
+        })
+    })
+    test('200: reviews array is sorted by date in descending order by default', () => {
+        return request(app)
+        .get('/api/reviews')
+        .expect(200)
+        .then(({body}) => {
+            expect(body.reviews.length).toBe(13);
+            expect(body.reviews).toBeSortedBy('created_at', {descending: true});
+        })
+    })
+    test('200: category query successfully filters the results by value specified in the query', () => {
+        const pathQuery = 'category=social%20deduction'
+        return request(app)
+        .get(`/api/reviews?${pathQuery}`)
+        .expect(200)
+        .then(({body}) => {
+            expect(body.hasOwnProperty('reviews')).toBe(true);
+            expect(body.reviews.length).toBe(11);
+            body.reviews.forEach((review) => {
+                expect(review.category).toBe('social deduction')
+            })
+        })
+    })
+    test('404: responds with Page not found when requesting a bad path', () => {
+        return request(app)
+        .get('/api/InvalidPath')
+        .expect(404)
+        .then(({body}) => {
+            expect(body).toEqual({msg: 'Not found'})
+        })
+    })
+    test('200: responds with an object containing an empty array when an existing category that has no data associated is used as the query values', () => {
+        return request(app)
+        .get('/api/reviews?category=children%27s%20games')
+        .expect(200)
+        .then(({body}) => {
+            expect(body.hasOwnProperty('reviews')).toBe(true);
+            expect(Array.isArray(body.reviews)).toBe(true);
+            expect(body.reviews.length).toBe(0);
+        })
+    })
+    test('404: responds with "Category not found" when a category that does not exist is used as the query value', () => {
+        return request(app)
+        .get('/api/reviews?category=not_a_category')
+        .expect(404)
+        .then(({body}) => {
+            expect(body).toEqual({msg: 'Category not found'});
+        })
+    })
+    
+})
