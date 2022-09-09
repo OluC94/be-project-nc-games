@@ -305,3 +305,74 @@ describe('GET /api/reviews', () => {
     })
     
 })
+
+describe('GET /api/reviews/:review_id/comments', () => {
+    test('200: responds with an object containing an array of comments, where each comment contains the correct properties', () => {
+        const testReviewID = 3;
+        return request(app)
+        .get(`/api/reviews/${testReviewID}/comments`)
+        .expect(200)
+        .then(({body}) => {
+            expect(body.hasOwnProperty('comments')).toBe(true);
+            expect(Array.isArray(body.comments)).toBe(true);
+            expect(body.comments.length).toBe(3);
+            body.comments.forEach((comment) => {
+                expect(comment).toMatchObject({
+                    comment_id: expect.any(Number),
+                    votes: expect.any(Number),
+                    created_at: expect.any(String),
+                    author: expect.any(String),
+                    body: expect.any(String),
+                    review_id: testReviewID
+                })
+            })
+        })
+    })
+    test('200: responds with an object containing an empty array when a valid review id that has no comments is requested', () => {
+        const testReviewID = 6;
+        return request(app)
+        .get(`/api/reviews/${testReviewID}/comments`)
+        .expect(200)
+        .then(({body}) => {
+            expect(body.hasOwnProperty('comments')).toBe(true);
+            expect(Array.isArray(body.comments)).toBe(true);
+            expect(body.comments.length).toBe(0);
+        })
+    });
+    test('404: responds with "Review not found" when a valid review id that does not exist is requested', () => {
+        const testReviewID = 300;
+        return request(app)
+        .get(`/api/reviews/${testReviewID}/comments`)
+        .expect(404)
+        .then(({body}) => {
+            expect(body).toEqual({msg: "Review not found"})
+        })
+    });
+    test('400: responds with "Bad Request" when requesting the comments for an invalid review id', () => {
+        const testReviewID = 'not_an_id';
+        return request(app)
+        .get(`/api/reviews/${testReviewID}/comments`)
+        .expect(400)
+        .then(({body}) => {
+            expect(body).toEqual({msg: "Bad Request"})
+        })
+    });
+    test('404: responds with "Not found" if invalid endpoint is used with a valid review_id', () => {
+        const testReviewID = 3;
+        return request(app)
+        .get(`/api/reviews/${testReviewID}/invalid_endpoint`)
+        .expect(404)
+        .then(({body}) => {
+            expect(body).toEqual({msg: 'Not found'});
+        })
+    });
+    test('404: responds with "Not found" if invalid endpoint is used with an  invalid review_id', () => {
+        const testReviewID = 'not_an_id';
+        return request(app)
+        .get(`/api/reviews/${testReviewID}/invalid_endpoint`)
+        .expect(404)
+        .then(({body}) => {
+            expect(body).toEqual({msg: 'Not found'});
+        })
+    })
+})
