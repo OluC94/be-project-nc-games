@@ -6,7 +6,10 @@ exports.fetchCategories = () => {
     })
 };
 
-exports.fetchReviews = (category) => {
+exports.fetchReviews = (category, sort_by = 'created_at') => {
+    // const validQueries = ['column names here']
+    //
+
     const queryValuesArr = []
     let queryStr = `
     SELECT reviews.owner, reviews.title, reviews.review_id, reviews.category, reviews.review_img_url, reviews.created_at, reviews.votes, reviews.designer, COUNT(comments.review_id) AS comment_count
@@ -21,7 +24,7 @@ exports.fetchReviews = (category) => {
 
     queryStr += `
      GROUP BY reviews.review_id
-    ORDER BY reviews.created_at DESC;`
+    ORDER BY reviews.${sort_by} DESC;`
 
     return db.query(queryStr, queryValuesArr).then(({rows}) => {        
         

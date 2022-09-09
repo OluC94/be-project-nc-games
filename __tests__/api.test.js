@@ -458,3 +458,26 @@ describe('POST /api/reviews/:review_id/comments', () => {
         })
     })
 })
+
+describe('GET /api/reviews (queries)', () => {
+    test('200: returns reviews results sorted by a valid specified column', () => {
+        const testQuery = '?sort_by=votes'
+        return request(app)
+        .get(`/api/reviews${testQuery}`)
+        .expect(200)
+        .then(({body}) => {
+            expect(body.reviews.length).toBe(13);
+            expect(body.reviews).toBeSortedBy('votes', {descending: true})
+        })
+    });
+    test('200: results are sorted by date by default', () => {
+        return request(app)
+        .get(`/api/reviews`)
+        .expect(200)
+        .then(({body}) => {
+            expect(body.reviews.length).toBe(13);
+            expect(body.reviews).toBeSortedBy('created_at', {descending: true})
+        })
+    });
+    test.todo('200: results are correctly returned in the specified order')
+})
