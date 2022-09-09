@@ -98,7 +98,7 @@ exports.editReview = (review_id, patchData) => {
 }
 
 exports.fetchCommentsByReviewID = (review_id) => {
-    review_id = parseInt(review_id)
+    review_id = parseInt(review_id);
     const queryStr = `
     SELECT * FROM comments
     WHERE review_id = $1;`

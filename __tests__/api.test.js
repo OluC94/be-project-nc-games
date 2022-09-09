@@ -366,5 +366,13 @@ describe('GET /api/reviews/:review_id/comments', () => {
             expect(body).toEqual({msg: 'Not found'});
         })
     });
-    test.todo('404: responds with "Not found" if invalid endpoint is used with an  invalid review_id')
+    test('404: responds with "Not found" if invalid endpoint is used with an  invalid review_id', () => {
+        const testReviewID = 'not_an_id';
+        return request(app)
+        .get(`/api/reviews/${testReviewID}/invalid_endpoint`)
+        .expect(404)
+        .then(({body}) => {
+            expect(body).toEqual({msg: 'Not found'});
+        })
+    })
 })
