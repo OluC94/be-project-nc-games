@@ -127,6 +127,18 @@ exports.fetchCommentsByReviewID = (review_id) => {
     })
 }
 
+exports.insertCommentByReviewID = (review_id, newCommentData) => {
+    review_id = parseInt(review_id);
+    const { username, body: newComment} = newCommentData
+    const queryStr = `
+    INSERT INTO comments (review_id, author, body)
+    VALUES ($1, $2, $3) RETURNING *;`;
+    const queryValuesArr = [review_id, username, newComment];
+    return db.query(queryStr, queryValuesArr).then(({rows}) => {
+        return rows[0];
+    })
+}
+
 exports.fetchUsers = () => {
     return db.query('SELECT * FROM users').then((users) => {
         return users.rows;
