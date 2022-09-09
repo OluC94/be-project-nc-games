@@ -383,4 +383,63 @@ describe('POST /api/reviews/:review_id/comments', () => {
             expect(rows.length).toBe(7)
         })
     })
+    test('400: responds with "Bad Request" when input object is empty', () => {
+        const testReviewID = 4;
+        return request(app)
+        .post(`/api/reviews/${testReviewID}/comments`)
+        .send({})
+        .expect(400)
+        .then(({body}) => {
+            expect(body).toEqual({msg: "Bad Request"});
+        }).then(() => {
+            return db.query('SELECT * FROM comments')
+        }).then(({rows}) => {
+            expect(rows.length).toBe(6)
+        })
+    })
+    test('400: responds with "Bad Request" when input object contains invalid key', () => {
+        const inputComment = {'not_a_key': 'dav3rid', body: 'example text'};
+        const testReviewID = 4;
+        return request(app)
+        .post(`/api/reviews/${testReviewID}/comments`)
+        .send(inputComment)
+        .expect(400)
+        .then(({body}) => {
+            expect(body).toEqual({msg: "Bad Request"});
+        }).then(() => {
+            return db.query('SELECT * FROM comments')
+        }).then(({rows}) => {
+            expect(rows.length).toBe(6)
+        })
+    })
+    test('400: responds with "Bad Request" when input object contains username that does not exist in the database', () => {
+        const inputComment = {username: 'not_a_user', body: 'example text'};
+        const testReviewID = 4;
+        return request(app)
+        .post(`/api/reviews/${testReviewID}/comments`)
+        .send(inputComment)
+        .expect(400)
+        .then(({body}) => {
+            expect(body).toEqual({msg: "Bad Request"});
+        }).then(() => {
+            return db.query('SELECT * FROM comments')
+        }).then(({rows}) => {
+            expect(rows.length).toBe(6)
+        })
+    })
+    test('404: responds with "Review not found" when attempting to post comments to a valid review id that does not exist in the database', () => {
+        const inputComment = {username: 'dav3rid', body: 'example text'};
+        const testReviewID = 400;
+        return request(app)
+        .post(`/api/reviews/${testReviewID}/comments`)
+        .send(inputComment)
+        .expect(404)
+        .then(({body}) => {
+            expect(body).toEqual({msg: "Review not found"});
+        }).then(() => {
+            return db.query('SELECT * FROM comments')
+        }).then(({rows}) => {
+            expect(rows.length).toBe(6)
+        })
+    })
 })
