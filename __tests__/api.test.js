@@ -442,4 +442,15 @@ describe('POST /api/reviews/:review_id/comments', () => {
             expect(rows.length).toBe(6)
         })
     })
+    test('400: responds with "Bad Request" when attempting to POST valid data to an invalid review ID', () => {
+        const inputComment = {username: 'dav3rid', body: 'example text'};
+        const testReviewID = 'not_an_ID';
+        return request(app)
+        .post(`/api/reviews/${testReviewID}/comments`)
+        .send(inputComment)
+        .expect(400)
+        .then(({body}) => {
+            expect(body).toEqual({msg: "Bad Request"});
+        })
+    })
 })
