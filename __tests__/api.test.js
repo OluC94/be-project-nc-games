@@ -451,6 +451,10 @@ describe('POST /api/reviews/:review_id/comments', () => {
         .expect(400)
         .then(({body}) => {
             expect(body).toEqual({msg: "Bad Request"});
+        }).then(() => {
+            return db.query('SELECT * FROM comments')
+        }).then(({rows}) => {
+            expect(rows.length).toBe(6)
         })
     })
 })
