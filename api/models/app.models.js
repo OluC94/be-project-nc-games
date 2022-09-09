@@ -127,6 +127,29 @@ exports.fetchCommentsByReviewID = (review_id) => {
     })
 }
 
+exports.insertCommentByReviewID = (review_id, newCommentData) => {
+    review_id = parseInt(review_id);
+    const { username, body: newComment} = newCommentData
+
+    const queryStr = `
+    INSERT INTO comments (review_id, author, body)
+    VALUES ($1, $2, $3) RETURNING *;`;
+    const queryValuesArr = [review_id, username, newComment];
+    
+    return db.query('SELECT review_id FROM reviews WHERE review_id = $1', [review_id]).then(({rows}) => {
+        if (rows.length === 0){
+            return Promise.reject({status: 404, msg: 'Review not found'})
+        }
+        else {
+            return rows;
+        }
+    }).then(() => {
+        return db.query(queryStr, queryValuesArr)
+    }).then(({rows}) => {
+        return rows[0];
+    })
+}
+
 exports.fetchUsers = () => {
     return db.query('SELECT * FROM users').then((users) => {
         return users.rows;
