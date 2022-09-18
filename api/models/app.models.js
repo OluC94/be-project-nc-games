@@ -6,7 +6,18 @@ exports.fetchCategories = () => {
     })
 };
 
-exports.fetchReviews = (category) => {
+exports.fetchReviews = (category, sort_by = 'created_at', order = 'desc') => {
+    // const validQueries = ['column names here']
+    //
+    let orderStr = '';
+    if (order === 'desc'){
+        orderStr = `DESC`
+    } else if (order === 'asc') {
+        orderStr = `ASC`
+    } else {
+        return Promise.reject({status: 400, msg: 'Bad Request'})
+    }
+
     const queryValuesArr = []
     let queryStr = `
     SELECT reviews.owner, reviews.title, reviews.review_id, reviews.category, reviews.review_img_url, reviews.created_at, reviews.votes, reviews.designer, COUNT(comments.review_id) AS comment_count
@@ -21,7 +32,7 @@ exports.fetchReviews = (category) => {
 
     queryStr += `
      GROUP BY reviews.review_id
-    ORDER BY reviews.created_at DESC;`
+    ORDER BY reviews.${sort_by} ${orderStr};`
 
     return db.query(queryStr, queryValuesArr).then(({rows}) => {        
         
