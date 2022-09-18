@@ -1,4 +1,4 @@
-const { fetchCategories, fetchReviewByID, fetchUsers, editReview, fetchReviews, fetchCommentsByReviewID, insertCommentByReviewID } = require("../models/app.models");
+const { fetchCategories, fetchReviewByID, fetchUsers, editReview, fetchReviews, fetchCommentsByReviewID, insertCommentByReviewID, removeCommentByCommentID } = require("../models/app.models");
 
 exports.getCategories = (req, res, next) => {
     fetchCategories().then((categories) => {
@@ -46,5 +46,12 @@ exports.postCommentByID = (req, res, next) => {
 exports.getUsers = (req, res, next) => {
     fetchUsers().then((users) => {
         res.status(200).send({users})
+    }).catch(next);
+}
+
+exports.deleteCommentByCommentID = (req, res, next) => {
+    const {comment_id} = req.params;
+    removeCommentByCommentID(comment_id).then((deletedItem) => {
+        res.status(204).send({});
     }).catch(next);
 }

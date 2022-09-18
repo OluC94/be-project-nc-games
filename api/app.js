@@ -1,5 +1,5 @@
 const express = require('express');
-const { getCategories, getReviewByID, getUsers, patchReviewByID, getReviews, getCommentsByReviewID, postCommentByID } = require('./controllers/app.controllers');
+const { getCategories, getReviewByID, getUsers, patchReviewByID, getReviews, getCommentsByReviewID, postCommentByID, deleteCommentByCommentID } = require('./controllers/app.controllers');
 const { handleInternalServerErrors, handleBadPath, handleCustomErrors } = require('./controllers/errors.controllers');
 
 const app = express();
@@ -14,6 +14,8 @@ app.get('/api/reviews/:review_id/comments', getCommentsByReviewID)
 app.post('/api/reviews/:review_id/comments', postCommentByID);
 
 app.get('/api/users', getUsers);
+
+app.delete('/api/comments/:comment_id', deleteCommentByCommentID);
 
 app.use(handleCustomErrors);
 app.use(handleBadPath);
