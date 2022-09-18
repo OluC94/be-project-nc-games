@@ -166,3 +166,10 @@ exports.fetchUsers = () => {
         return users.rows;
     })
 }
+
+exports.removeCommentByCommentID = (comment_id) => {
+    const queryStr = `DELETE FROM comments WHERE comment_id = $1 RETURNING *;`;
+    const queryValuesArr = [comment_id];
+    
+    return db.query(queryStr, queryValuesArr);
+}
