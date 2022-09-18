@@ -6,9 +6,17 @@ exports.fetchCategories = () => {
     })
 };
 
-exports.fetchReviews = (category, sort_by = 'created_at') => {
+exports.fetchReviews = (category, sort_by = 'created_at', order = 'desc') => {
     // const validQueries = ['column names here']
     //
+    let orderStr = '';
+    if (order === 'desc'){
+        orderStr = `DESC`
+    } else if (order === 'asc') {
+        orderStr = `ASC`
+    } else {
+        return Promise.reject({status: 400, msg: 'Bad Request'})
+    }
 
     const queryValuesArr = []
     let queryStr = `
@@ -24,7 +32,7 @@ exports.fetchReviews = (category, sort_by = 'created_at') => {
 
     queryStr += `
      GROUP BY reviews.review_id
-    ORDER BY reviews.${sort_by} DESC;`
+    ORDER BY reviews.${sort_by} ${orderStr};`
 
     return db.query(queryStr, queryValuesArr).then(({rows}) => {        
         

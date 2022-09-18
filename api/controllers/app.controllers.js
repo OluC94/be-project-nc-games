@@ -7,8 +7,8 @@ exports.getCategories = (req, res, next) => {
 };
 
 exports.getReviews = (req, res, next) => {
-    const { category, sort_by } = req.query;
-    fetchReviews(category, sort_by).then((reviews) => {{
+    const { category, sort_by, order } = req.query;
+    fetchReviews(category, sort_by, order).then((reviews) => {{
         res.status(200).send({reviews})
     }}).catch(next);
 }
