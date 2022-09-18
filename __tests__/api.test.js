@@ -516,6 +516,7 @@ describe('DETELE /api/comments/:comment_id', () => {
         .delete(`/api/comments/${testCommentID}`)
         .expect(204)
         .then(({body}) => {
+            console.log(body);
             expect(body).toEqual({});
         }).then(() => {
             return db.query('SELECT * FROM comments')
@@ -523,7 +524,39 @@ describe('DETELE /api/comments/:comment_id', () => {
             expect(rows.length).toBe(5);
         })
     });
-    test.todo('400: responds with "Bad Request" when attempting to delete an invalid comment id');
-    test.todo('404: responds with "Comment not found when attempting to delete a valid comment id that does not exist"');
-    test.todo('404: responds with "Page not found" when attempting to delete a bad path');
+    test('400: responds with "Bad Request" when attempting to delete an invalid comment id', () => {
+        const testCommentID = 'not_an_id';
+        return request(app)
+        .delete(`/api/comments/${testCommentID}`)
+        .expect(400)
+        .then(({body}) => {
+            expect(body.msg).toBe('Bad Request');
+        }).then(() => {
+            return db.query('SELECT * FROM comments')
+        }).then(({rows}) => {
+            expect(rows.length).toBe(6);
+        })
+    });
+    test('404: responds with "Comment not found" when attempting to delete a valid comment id that does not exist', () => {
+        const testCommentID = 200;
+        return request(app)
+        .delete(`/api/comments/${testCommentID}`)
+        .expect(404)
+        .then(({body}) => {
+            expect(body.msg).toBe('Comment not found');
+        }).then(() => {
+            return db.query('SELECT * FROM comments')
+        }).then(({rows}) => {
+            expect(rows.length).toBe(6);
+        })
+    });
+    test('404: responds with "Page not found" when attempting to delete a bad path', () => {
+        const testCommentID = 1;
+        return request(app)
+        .delete(`/api/InvalidPath/${testCommentID}`)
+        .expect(404)
+        .then(({body}) => {
+            expect(body).toEqual({msg: 'Not found'})
+        });
+    });
 })
