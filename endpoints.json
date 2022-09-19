@@ -30,5 +30,68 @@
         }
       ]
     }
+  },
+  "GET /api/reviews/:review_id": {
+    "description": "serves an object containing details on the review specified by the review_id",
+    "queries": ["category", "sort_by", "order"],
+    "exampleResponse": {
+      "review": {
+        "review_id": 4,
+        "title": "One Night Ultimate Werewolf",
+        "category": "hidden-roles",
+        "designer": "Akihisa Okui",
+        "owner": "happyamy2016",
+        "review_body": "We couldn't find the werewolf!",
+        "review_img_url": "https://images.pexels.com/photos/5350049/pexels-photo-5350049.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260",
+        "created_at": "2021-01-18T10:01:41.251Z",
+        "votes": 5,
+        "comment_count": 4
+      }
+    }
+  },
+  "PATCH /api/reviews/:review_id": {
+    "description": "Edits the vote count of a review by the given review_id",
+    "queries": [],
+    "exampleInput": {
+      "inc_votes": 7
+    }
+  },
+  "GET /api/reviews/:review_id/comments": {
+    "description": "serves an array of comments for a given review_id",
+    "queries": [],
+    "exampleResponse": {
+      "comment_id": 4,
+      "votes": 15,
+      "created_at": "2017-11-22T12:36:03.389Z",
+      "author": "bainesface",
+      "body": "EPIC board game!",
+      "review_id": 2
+    }
+  },
+  "POST /api/reviews/:review_id/comments": {
+    "description": "adds a comment to a given review_id",
+    "queries": [],
+    "exampleInput": {
+      "username": "tickle122",
+      "body": "Example comment text"
+    }
+  },
+  "GET /api/users": {
+    "description": "serves an array of all users",
+    "queries": [],
+    "exampleResponse": {
+      "users":[
+        {
+          "username": "weegembump",
+          "name": "Gemma Bump",
+          "avatar_url": "https://vignette.wikia.nocookie.net/mrmen/images/7/7e/MrMen-Bump.png/revision/latest?cb=20180123225553"
+        }
+      ]
+    }
+  },
+  "DELETE /api/comments/:comment_id": {
+    "description": "deletes a comment based on the specified comment_id",
+    "queries": [],
+    "exampleResponse": {}
   }
 }

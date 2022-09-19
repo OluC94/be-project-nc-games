@@ -516,7 +516,6 @@ describe('DETELE /api/comments/:comment_id', () => {
         .delete(`/api/comments/${testCommentID}`)
         .expect(204)
         .then(({body}) => {
-            console.log(body);
             expect(body).toEqual({});
         }).then(() => {
             return db.query('SELECT * FROM comments')
@@ -559,4 +558,59 @@ describe('DETELE /api/comments/:comment_id', () => {
             expect(body).toEqual({msg: 'Not found'})
         });
     });
+})
+
+describe.only('GET /api', () => {
+    test('200: responds with JSON containing a list of all available endpoints', () => {
+        return request(app)
+        .get('/api')
+        .expect(200)
+        .then(({body}) => {
+            expect(body).toMatchObject({
+                "GET /api": expect.any(Object),
+                "GET /api/categories": expect.any(Object),
+                "GET /api/reviews": expect.any(Object),
+                "GET /api/reviews/:review_id": expect.any(Object),
+                "PATCH /api/reviews/:review_id": expect.any(Object),
+                "GET /api/reviews/:review_id/comments": expect.any(Object),
+                "POST /api/reviews/:review_id/comments": expect.any(Object),
+                "GET /api/users": expect.any(Object),
+                "DELETE /api/comments/:comment_id": expect.any(Object),
+            });
+            
+        })
+    });
+    test('200: responds with JSON containing appropriate details of all avaiable endpoints', () => {
+        return request(app)
+        .get('/api')
+        .expect(200)
+        .then(({body}) => {
+            expect(Object.keys(body).length).toBe(9);
+            for (let endpoint in body){
+                expect(body[endpoint].hasOwnProperty('description')).toBe(true);
+            }
+            expect(typeof body["GET /api/reviews/:review_id"].description).toBe('string');
+            expect(body["GET /api/reviews/:review_id"].queries).toEqual(["category", "sort_by", "order"]);
+            expect(body["GET /api/reviews/:review_id"].exampleResponse.review).toMatchObject({
+                "review_id": expect.any(Number),
+                "title": expect.any(String),
+                "category": expect.any(String),
+                "designer": expect.any(String),
+                "owner": expect.any(String),
+                "review_body": expect.any(String),
+                "review_img_url": expect.any(String),
+                "created_at": expect.any(String),
+                "votes": expect.any(Number),
+                "comment_count": expect.any(Number)
+            })
+        })
+    })
+    test('404: responds with "Not found" when a bad path is input', () => {
+        return request(app)
+        .get('/not_a_path')
+        .expect(404)
+        .then(({body}) => {
+            expect(body.msg).toBe('Not found')
+        })
+    })
 })
