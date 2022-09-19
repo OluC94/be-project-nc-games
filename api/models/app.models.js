@@ -1,4 +1,9 @@
 const db = require('../../db/connection');
+const endpoints = require('../../endpoints.json')
+
+exports.fetchApi = () => {
+    return Promise.all([endpoints]);
+};
 
 exports.fetchCategories = () => {
     return db.query('SELECT * FROM categories').then((categories) => {

@@ -1,4 +1,10 @@
-const { fetchCategories, fetchReviewByID, fetchUsers, editReview, fetchReviews, fetchCommentsByReviewID, insertCommentByReviewID, removeCommentByCommentID } = require("../models/app.models");
+const { fetchCategories, fetchReviewByID, fetchUsers, editReview, fetchReviews, fetchCommentsByReviewID, insertCommentByReviewID, removeCommentByCommentID, fetchApi } = require("../models/app.models");
+
+exports.getApi = (req, res, next) => {
+    fetchApi().then((endpoints) => {
+        res.status(200).send(endpoints[0]);
+    }).catch(next)
+}
 
 exports.getCategories = (req, res, next) => {
     fetchCategories().then((categories) => {

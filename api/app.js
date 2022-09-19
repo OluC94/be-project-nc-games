@@ -1,9 +1,11 @@
 const express = require('express');
-const { getCategories, getReviewByID, getUsers, patchReviewByID, getReviews, getCommentsByReviewID, postCommentByID, deleteCommentByCommentID } = require('./controllers/app.controllers');
+const { getCategories, getReviewByID, getUsers, patchReviewByID, getReviews, getCommentsByReviewID, postCommentByID, deleteCommentByCommentID, getApi } = require('./controllers/app.controllers');
 const { handleInternalServerErrors, handleBadPath, handleCustomErrors } = require('./controllers/errors.controllers');
 
 const app = express();
 app.use(express.json());
+
+app.get('/api', getApi);
 
 app.get('/api/categories', getCategories);
 
