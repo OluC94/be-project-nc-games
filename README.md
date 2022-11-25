@@ -12,8 +12,8 @@ Information contained in the database includes:
 
 ## Link to the API
 
-This app is currently hosted by Heroku at the following link:
-https://oluc94-nc-games.netlify.app/reviews
+This app is currently hosted by ElephantSPL and Cyclic at the following link:
+https://oluc94-nc-games.cyclic.app/api
 
 ## Local Database connection
 
