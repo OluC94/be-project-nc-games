@@ -2,7 +2,7 @@
   "name": "be-nc-games",
   "version": "1.0.0",
   "description": "bc-nc-games",
-  "main": "index.js",
+  "main": "listen.js",
   "scripts": {
     "start": "node listen.js",
     "setup-dbs": "psql postgres -f ./db/setup.sql",
@@ -10,7 +10,7 @@
     "test-seed": "NODE_ENV=test node ./db/seeds/run-test-seed.js",
     "test": "jest",
     "prepare": "husky install && chmod ug+x .husky/*",
-    "seed:prod": "NODE_ENV=production DATABASE_URL=$(heroku config:get DATABASE_URL) npm run seed"
+    "seed:prod": "NODE_ENV=production npm run seed"
   },
   "repository": {
     "type": "git",
