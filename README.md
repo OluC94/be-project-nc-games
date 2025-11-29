@@ -28,7 +28,7 @@ Add `PGDATABASE=<database_name_here>`, with the correct database name for that e
    - `cd fe-nc-games`
 3. Navigate to the root folder of this repository and then install all dependencies using the command `npm install`.
 4. Seed the database locally by running the command `npm run seed`
-5. To view the outcome if the component test run the comment `npm test`
+5. To view the outcome of the component test, run the comment `npm test`
 
 ## Node.js and Postgres requirements
 
