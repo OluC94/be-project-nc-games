@@ -9,7 +9,6 @@
     "seed": "node ./db/seeds/run-seed.js",
     "test-seed": "NODE_ENV=test node ./db/seeds/run-test-seed.js",
     "test": "jest",
-    "prepare": "husky install && chmod ug+x .husky/*",
     "seed:prod": "NODE_ENV=production npm run seed"
   },
   "repository": {
