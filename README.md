@@ -13,7 +13,7 @@ Information contained in the database includes:
 ## Link to the API
 
 This app is currently hosted by ElephantSPL and Cyclic at the following link:
-https://oluc94-nc-games.cyclic.app/api
+https://be-project-nc-games.onrender.com/api
 
 ## Local Database connection
 
